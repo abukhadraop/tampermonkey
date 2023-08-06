@@ -19,19 +19,24 @@
   const getQueryParameter = (name) =>
     new URLSearchParams(window.location.search).get(name);
 
-  const scripts = []
+  let scripts = []
     .concat(
-      (getQueryParameter(GITHUB_QUERY_PARAM) || '').split(',').map(mapGithubUrl)
+      (getQueryParameter(GITHUB_QUERY_PARAM) || '')
+        .split(',')
+        .filter((x) => !!x)
+        .map(mapGithubUrl)
     )
     .concat(
       (getQueryParameter(FIRE_BASE_QUERY_PARAM) || '')
         .split(',')
+        .filter((x) => !!x)
         .map(mapFirebaseUrl)
     );
-
-  if (!script.length) {
+  if (!scripts.length) {
     const isShopSite = window.location.host.toLowerCase().includes('shop.');
-    scripts.concat(isShopSite ? SHOP_DEFAULT_SCRIPTS : SITE_DEFAULT_SCRIPTS);
+    scripts = scripts.concat(
+      isShopSite ? SHOP_DEFAULT_SCRIPTS : SITE_DEFAULT_SCRIPTS
+    );
   }
 
   scripts.forEach((scr) => {
